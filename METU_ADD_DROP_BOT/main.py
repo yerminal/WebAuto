@@ -10,9 +10,14 @@ metu_username = ''  # Your METU username - eXXXXXX - e204849
 metu_password = ''  # Your METU password
 
 courseCode = '6390102'
-sectionCode = '95'  # CURRENT SECTION CODE
+sectionCode = '95'  # CURRENT SECTION
 orderOfCourse = 7
 categoryCode = '1'
+
+priorList = [63, 61, 13, 14, 15, 90]  # Section list which you want to enter
+
+duration = 1000  # milliseconds
+freq = 440  # Hz
 
 """
 COURSE CATEGORIES:
@@ -24,11 +29,6 @@ TECHNICAL ELECTIVE = 7
 NONTECHNICAL ELECTIVE = 8
 NOT INCLUDED = 9
 """
-
-priorList = [63, 61, 13, 14, 15, 90]  # Section list which you want to enter
-
-duration = 1000  # milliseconds
-freq = 440  # Hz
 
 def start_process(driver, wait):
     driver.get("https://register.metu.edu.tr")
