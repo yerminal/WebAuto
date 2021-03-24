@@ -24,14 +24,6 @@
       ]
     },
     {
-      "Command": "sendKeys",
-      "Target": "id=textAddCourseSection",
-      "Value": "${KEY_BACKSPACE}${KEY_BACKSPACE}${KEY_BACKSPACE}${KEY_BACKSPACE}${KEY_BACKSPACE}${KEY_BACKSPACE}${KEY_BACKSPACE}",
-      "Targets": [
-        "id=textAddCourseSection"
-      ]
-    },
-    {
       "Command": "type",
       "Target": "id=textAddCourseCode",
       "Value": "6390102",
@@ -43,14 +35,6 @@
       "Command": "click",
       "Target": "id=textAddCourseSection",
       "Value": "",
-      "Targets": [
-        "id=textAddCourseSection"
-      ]
-    },
-    {
-      "Command": "sendKeys",
-      "Target": "id=textAddCourseSection",
-      "Value": "${KEY_BACKSPACE}${KEY_BACKSPACE}${KEY_BACKSPACE}",
       "Targets": [
         "id=textAddCourseSection"
       ]
