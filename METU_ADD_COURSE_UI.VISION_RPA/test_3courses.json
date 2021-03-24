@@ -1,6 +1,6 @@
 {
-  "Name": "2MUSTcourse_1Elective",
-  "CreationDate": "2021-3-24",
+  "Name": "sss",
+  "CreationDate": "2021-3-25",
   "Commands": [
     {
       "Command": "click",
@@ -119,6 +119,11 @@
       ]
     },
     {
+      "Command": "pause",
+      "Target": "50",
+      "Value": ""
+    },
+    {
       "Command": "type",
       "Target": "id=textAddCourseSection",
       "Value": "63",
@@ -201,6 +206,11 @@
       "Targets": [
         "id=textAddCourseSection"
       ]
+    },
+    {
+      "Command": "pause",
+      "Target": "50",
+      "Value": ""
     },
     {
       "Command": "type",
