@@ -1,0 +1,95 @@
+    {
+      "Command": "click",
+      "Target": "id=textAddCourseCode",
+      "Value": "",
+      "Targets": [
+        "id=textAddCourseCode"
+      ]
+    },
+    {
+      "Command": "sendKeys",
+      "Target": "id=textAddCourseCode",
+      "Value": "${KEY_BACKSPACE}${KEY_BACKSPACE}${KEY_BACKSPACE}${KEY_BACKSPACE}${KEY_BACKSPACE}${KEY_BACKSPACE}${KEY_BACKSPACE}",
+      "Targets": [
+        "id=textAddCourseCode"
+      ]
+    },
+    {
+      "Command": "type",
+      "Target": "id=textAddCourseCode",
+      "Value": "6390102",
+      "Targets": [
+        "id=textAddCourseCode"
+      ]
+    },
+    {
+      "Command": "click",
+      "Target": "id=textAddCourseSection",
+      "Value": "",
+      "Targets": [
+        "id=textAddCourseSection"
+      ]
+    },
+    {
+      "Command": "sendKeys",
+      "Target": "id=textAddCourseSection",
+      "Value": "${KEY_BACKSPACE}${KEY_BACKSPACE}${KEY_BACKSPACE}",
+      "Targets": [
+        "id=textAddCourseSection"
+      ]
+    },
+    {
+      "Command": "type",
+      "Target": "id=textAddCourseSection",
+      "Value": "63",
+      "Targets": [
+        "id=textAddCourseSection"
+      ]
+    },
+    {
+      "Command": "click",
+      "Target": "id=selectAddCourseCategory",
+      "Value": "",
+      "Targets": [
+        "id=selectAddCourseCategory"
+      ]
+    },
+    {
+      "Command": "select",
+      "Target": "id=selectAddCourseCategory",
+      "Value": "label=RESTRICTED ELECTIVE",
+      "Targets": [
+        "id=selectAddCourseCategory"
+      ]
+    },
+    {
+      "Command": "selectFrame",
+      "Target": "index=0",
+      "Value": ""
+    },
+    {
+      "Command": "click",
+      "Target": "xpath=//*[@id=\"recaptcha-anchor\"]/div",
+      "Value": "",
+      "Targets": [
+        "xpath=//*[@id=\"recaptcha-anchor\"]/div"
+      ]
+    },
+    {
+      "Command": "selectFrame",
+      "Target": "relative=top",
+      "Value": ""
+    },
+    {
+      "Command": "pause",
+      "Target": "400",
+      "Value": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=submitAddCourse",
+      "Value": "",
+      "Targets": [
+        "name=submitAddCourse"
+      ]
+    }
