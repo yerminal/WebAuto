@@ -3,11 +3,6 @@
   "CreationDate": "2021-3-24",
   "Commands": [
     {
-      "Command": "open",
-      "Target": "https://register.metu.edu.tr/",
-      "Value": ""
-    },
-    {
       "Command": "click",
       "Target": "xpath=//input[@name='submitLogin']",
       "Value": "",
