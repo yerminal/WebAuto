@@ -11,6 +11,11 @@
       ]
     },
     {
+      "Command": "pause",
+      "Target": "100",
+      "Value": ""
+    },
+    {
       "Command": "click",
       "Target": "id=textAddCourseCode",
       "Value": "",
@@ -72,6 +77,11 @@
       "Targets": [
         "name=submitAddCourse"
       ]
+    },
+    {
+      "Command": "pause",
+      "Target": "700",
+      "Value": ""
     },
     {
       "Command": "click",
@@ -161,6 +171,11 @@
       "Targets": [
         "name=submitAddCourse"
       ]
+    },
+    {
+      "Command": "pause",
+      "Target": "700",
+      "Value": ""
     },
     {
       "Command": "click",
