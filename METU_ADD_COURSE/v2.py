@@ -18,6 +18,7 @@ from selenium.webdriver.support import expected_conditions as EC
 # custom patch libraries
 from patch import download_latest_chromedriver, webdriver_folder_name
 
+# [courseCode, sectionCode, categoryCode]
 lessonList = [
     ['6390211', '1', '1'],
     ['5670201', '1', '1'],
