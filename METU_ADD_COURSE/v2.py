@@ -145,7 +145,6 @@ if __name__ == "__main__":
             options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
             driver = webdriver.Chrome(options=options, executable_path=path_to_chromedriver)
             wait = WebDriverWait(driver, timeout=10)
-            driver.get("https://www.google.com/recaptcha/api2/demo")
             delay(1)
             break
         except Exception:
