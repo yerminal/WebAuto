@@ -24,8 +24,7 @@ desired_time = "15:00:00"
 # [courseCode, sectionCode, categoryCode]
 lessonList = [
     ['5700230', '4', 'RESTRICTED ELECTIVE'],
-    ['5700230', '5', 'RESTRICTED ELECTIVE'],
-    ['5670213', '7', 'MUST']
+    ['5700230', '5', 'RESTRICTED ELECTIVE']
 ]
 
 """
@@ -69,13 +68,14 @@ def time_loop():
         if sec >= desired_sec:
             break
         time.sleep(0.2)
+    print("Exiting time loop...")
 
 def delay(waiting_time=5):
     driver.implicitly_wait(waiting_time)
 
 def recaptcha_control():
     element = driver.find_element_by_id("recaptcha-anchor")
-    print("Checkmark =", element.get_attribute('aria-checked'))
+    print("Recapctha Checkmark =", element.get_attribute('aria-checked'))
     if element.get_attribute('aria-checked') == "true":
         return True
     else:
@@ -126,72 +126,66 @@ def recaptcha_solver():
         frames = driver.find_elements_by_tag_name("iframe")
         driver.switch_to.frame(recaptcha_challenge_frame)
         
-        while 1:
-            # get the mp3 audio file
-            src = driver.find_element_by_id("audio-source").get_attribute("src")
-            print(f"[INFO] Audio src: {src}")
+        # get the mp3 audio file
+        src = driver.find_element_by_id("audio-source").get_attribute("src")
+        print(f"[INFO] Audio src: {src}")
 
-            path_to_mp3 = os.path.normpath(os.path.join(os.getcwd(), "sample.mp3"))
-            path_to_wav = os.path.normpath(os.path.join(os.getcwd(), "sample.wav"))
+        path_to_mp3 = os.path.normpath(os.path.join(os.getcwd(), "sample.mp3"))
+        path_to_wav = os.path.normpath(os.path.join(os.getcwd(), "sample.wav"))
 
-            # download the mp3 audio file from the source
-            urllib.request.urlretrieve(src, path_to_mp3)
+        # download the mp3 audio file from the source
+        urllib.request.urlretrieve(src, path_to_mp3)
 
-            # load downloaded mp3 audio file as .wav
-            try:
-                sound = pydub.AudioSegment.from_mp3(path_to_mp3)
-                sound.export(path_to_wav, format="wav")
-                sample_audio = sr.AudioFile(path_to_wav)
-            except Exception:
-                sys.exit(
-                    "[ERR] Please run program as administrator or download ffmpeg manually, "
-                    "https://blog.gregzaal.com/how-to-install-ffmpeg-on-windows/"
-                )
+        # load downloaded mp3 audio file as .wav
+        try:
+            sound = pydub.AudioSegment.from_mp3(path_to_mp3)
+            sound.export(path_to_wav, format="wav")
+            sample_audio = sr.AudioFile(path_to_wav)
+        except Exception:
+            sys.exit(
+                "[ERR] Please run program as administrator or download ffmpeg manually, "
+                "https://blog.gregzaal.com/how-to-install-ffmpeg-on-windows/"
+            )
 
-            # translate audio to text with google voice recognition
-            r = sr.Recognizer()
-            with sample_audio as source:
-                audio = r.record(source)
-            key = r.recognize_google(audio)
-            print(f"[INFO] Recaptcha Passcode: {key}")
-            # key in results and submit
-            audio_section = driver.find_element_by_id("audio-response")
-            audio_section.send_keys(key.lower())
-            audio_section.send_keys(Keys.ENTER)
+        # translate audio to text with google voice recognition
+        r = sr.Recognizer()
+        with sample_audio as source:
+            audio = r.record(source)
+        key = r.recognize_google(audio)
+        print(f"[INFO] Recaptcha Passcode: {key}")
+        # key in results and submit
+        audio_section = driver.find_element_by_id("audio-response")
+        audio_section.send_keys(key.lower())
+        audio_section.send_keys(Keys.ENTER)
 
-            driver.switch_to.default_content()
-            frames = driver.find_elements_by_tag_name("iframe")
-            driver.switch_to.frame(recaptcha_control_frame)
-            wait_recaptcha(1)
-            
-            if not recaptcha_control():
-                driver.switch_to.default_content()
-                refresh = True
-                print("refresh")
-                break
-            # driver.switch_to.default_content()
-            # frames = driver.find_elements_by_tag_name("iframe")
-            # driver.switch_to.frame(recaptcha_control_frame)
-            # wait_recaptcha()
-            driver.switch_to.default_content()
-            # print("cikti amk")
-            break
+        driver.switch_to.default_content()
+        frames = driver.find_elements_by_tag_name("iframe")
+        driver.switch_to.frame(recaptcha_control_frame)
+        wait_recaptcha(1)
+        
+        if not recaptcha_control():
+            control.refresh = True
+        driver.switch_to.default_content()
     else:
         driver.switch_to.default_content()
 
-def check_lesson(control_number):
+def check_lesson():
     for i in [x.get_attribute('value').split("|") for x in driver.find_elements_by_name("radio_courseList")]:
         try:
             lessonList.remove(i[:2] + [category_dic[i[-1]]]) 
-            if control_number != 0:
-                control_number -= 1
+            if control.control_number != 0:
+                control.control_number -= 1
         except ValueError:
             pass
-    return control_number
+
+class ControlTemp:
+    def __init__(self) -> None:
+        self.refresh = False
+        self.control_number = 0
+
 if __name__ == "__main__":
-    refresh = False
-    control_number = 0
     # download latest chromedriver, please ensure that your chrome is up to date
+    control = ControlTemp()
     while True:
         try:
             # create chrome driver
@@ -229,20 +223,18 @@ if __name__ == "__main__":
             try:
                 WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, '//input[@name="submitAddCourse"]')))
             except Exception as e:
-                print(e)
+                print("ERROR :", e)
 
             while 1:
-                control_number = check_lesson(control_number)
-                if control_number >= len(lessonList):
-                    control_number = 0
-                for order in list(range(len(lessonList)))[control_number:]:
-                    control_number = order
+                check_lesson()
+                if control.control_number >= len(lessonList):
+                    control.control_number = 0
+                for order in list(range(len(lessonList)))[control.control_number:]:
+                    control.control_number = order
                     lesson = lessonList[order]
                     courseCode, sectionCode, categoryCode = lesson[0], lesson[1], option_dic[lesson[2]] 
                     print(f"\n{order} | {courseCode} - {sectionCode}")
-                    # print("control_number =", control_number)
-                    # print("len(lessonList) =", len(lessonList))
-                    # print("\n", lessonList)
+                    
                     try:
                         WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, '//input[@name="submitAddCourse"]')))
                     except Exception as e:
@@ -258,18 +250,19 @@ if __name__ == "__main__":
                         driver.find_element_by_xpath(f'//*[@id="selectAddCourseCategory"]/option[{categoryCode}]').click()
 
                     recaptcha_solver()
-                    if refresh:
-                        refresh = False
+
+                    if control.refresh:
+                        control.refresh = False
                         break
                     driver.find_element_by_xpath('//input[@name="submitAddCourse"]').click()
-                control_number = 0
+                control.control_number = 0
                 
             if len(lessonList) == 0:
                 break
         except Exception as e:
             if len(lessonList) == 0:
                 break
-            print(e, "\nRestarting...")
+            print("ERROR:", e, "\nRestarting...")
         if len(lessonList) == 0:
             break
     print("\nALL DONE...")
