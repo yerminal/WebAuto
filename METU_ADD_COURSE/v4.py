@@ -54,6 +54,11 @@ def start_process():
     time_loop()
     driver.get("https://register.metu.edu.tr")
     wait.until(EC.presence_of_element_located((By.XPATH, '//input[@id="textUserCode"]')))
+    """
+    If your browser does not autocomplete the login info, run these additionally.
+    wait.until(EC.presence_of_element_located((By.XPATH, '//input[@id="textUserCode"]'))).send_keys(metu_username)
+    driver.find_element_by_xpath('//input[@id="textPassword"]').send_keys(metu_password)
+    """
     print("Login page found...")
     driver.find_element_by_xpath('//input[@name="submitLogin"]').click()
 
