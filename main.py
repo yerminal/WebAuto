@@ -16,7 +16,7 @@ if __name__ == "__main__":
     countdown_control = multiprocessing.Value('i', 0)
     restart_process_warning = multiprocessing.Value('i', 2)
     # creating new process
-    p1 = multiprocessing.Process(target=countdown.countdown, args=(0, 30, countdown_control, restart_process_warning, ))
+    p1 = multiprocessing.Process(target=countdown.countdown, args=(30, countdown_control, restart_process_warning, ))
     p2 = multiprocessing.Process(target=add_course.main, args=(countdown_control, restart_process_warning, ))
     p3 = multiprocessing.Process(target=start_chrome)
     p4 = multiprocessing.Process(target=killall_chrome)
