@@ -203,10 +203,10 @@ def main(countdown_control, restart_process_warning):
     path_to_chromedriver = os.path.normpath(
         os.path.join(os.getcwd(), "webdriver", "chromedriver")
     )
-    # options = webdriver.ChromeOptions()
-    # options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
-    # driver = webdriver.Chrome(options=options, executable_path=path_to_chromedriver)
-    driver = webdriver.Chrome(executable_path=path_to_chromedriver)
+    options = webdriver.ChromeOptions()
+    options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
+    driver = webdriver.Chrome(options=options, executable_path=path_to_chromedriver)
+    # driver = webdriver.Chrome(executable_path=path_to_chromedriver)
     wait = WebDriverWait(driver, timeout=3)
 
     # print(driver.title)
