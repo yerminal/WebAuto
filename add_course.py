@@ -17,14 +17,13 @@ from selenium.webdriver.support import expected_conditions as EC
 # custom patch libraries
 from datetime import datetime
 
-desired_time = "08:30:00"
+desired_time = "09:00:00"
 
 # [courseCode, sectionCode, categoryCode]
 lessonList = [
-    ['6050201', '2', 'NONTECHNICAL ELECTIVE'],
-    ['6040201', '2', 'NONTECHNICAL ELECTIVE'],
     ['6510141', '1', 'NONTECHNICAL ELECTIVE'],
-    ['6510141', '2', 'NONTECHNICAL ELECTIVE']
+    ['6510242', '1', 'NONTECHNICAL ELECTIVE'],
+    ['6510242', '2', 'NONTECHNICAL ELECTIVE']
 ]
 
 """
@@ -46,23 +45,25 @@ NONTECHNICAL ELECTIVE = 8
 NOT INCLUDED = 9
 """
 
-category_dic = {'1': 'MUST', '4': 'RESTRICTED ELECTIVE', '5': 'FREE ELECTIVE', '7': 'TECHNICAL ELECTIVE', '8': 'NONTECHNICAL ELECTIVE', '9': 'NOT INCLUDED'}
+# category_dic = {'1': 'MUST', '4': 'RESTRICTED ELECTIVE', '5': 'FREE ELECTIVE', '7': 'TECHNICAL ELECTIVE', '8': 'NONTECHNICAL ELECTIVE', '9': 'NOT INCLUDED'}
 option_dic = {'MUST': '1', 'RESTRICTED ELECTIVE': '2', 'FREE ELECTIVE': '3', 'TECHNICAL ELECTIVE': '4', 'NONTECHNICAL ELECTIVE': '5', 'NOT INCLUDED': '6'}
 
 
-def start_process(driver, wait):
-    time_loop()
+def start_process(driver, wait, countdown_control):
+    if desired_time:
+        time_loop(countdown_control)
     driver.get("https://register.metu.edu.tr")
     wait.until(EC.presence_of_element_located((By.XPATH, '//input[@id="textUserCode"]')))
     """
     If your browser does not autocomplete the login info, run these additionally.
-    wait.until(EC.presence_of_element_located((By.XPATH, '//input[@id="textUserCode"]'))).send_keys(metu_username)
-    driver.find_element_by_xpath('//input[@id="textPassword"]').send_keys(metu_password)
+    
     """
+    wait.until(EC.presence_of_element_located((By.XPATH, '//input[@id="textUserCode"]'))).send_keys("\b\b\b\b\b\b\be244416")
+    driver.find_element_by_xpath('//input[@id="textPassword"]').send_keys("\b\b\b\b\b\b\b\b\b\bKom.2240")
     print("Login page found...")
     driver.find_element_by_xpath('//input[@name="submitLogin"]').click()
 
-def time_loop():
+def time_loop(countdown_control):
     print("Entered time loop...")
     desired = list(map(int, desired_time.split(":")))
     desired_sec = desired[0]*3600 + desired[1]*60 + desired[2]
@@ -73,6 +74,7 @@ def time_loop():
             sec = lst[0]*3600 + lst[1]*60 + lst[2]
             if sec >= desired_sec:
                 break
+            countdown_control.value = 1
             time.sleep(0.2)
     print("Exiting time loop...")
 
@@ -201,9 +203,10 @@ def main(countdown_control, restart_process_warning):
     path_to_chromedriver = os.path.normpath(
         os.path.join(os.getcwd(), "webdriver", "chromedriver")
     )
-    options = webdriver.ChromeOptions()
-    options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
-    driver = webdriver.Chrome(options=options, executable_path=path_to_chromedriver)
+    # options = webdriver.ChromeOptions()
+    # options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
+    # driver = webdriver.Chrome(options=options, executable_path=path_to_chromedriver)
+    driver = webdriver.Chrome(executable_path=path_to_chromedriver)
     wait = WebDriverWait(driver, timeout=3)
 
     # print(driver.title)
@@ -211,7 +214,7 @@ def main(countdown_control, restart_process_warning):
 
     while 1:
         try:
-            start_process(driver, wait)
+            start_process(driver, wait, countdown_control)
             try:
                 WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, '//input[@name="submitAddCourse"]')))
             except Exception as e:
