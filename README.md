@@ -19,4 +19,7 @@ python main_test.py
 ```bash
 python main.py
 ```
-
+3. You can run multiples of main.py. Just open up another terminal and type:
+```bash
+python main.py
+```
