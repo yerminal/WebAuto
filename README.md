@@ -8,13 +8,15 @@
 ```bash
 pip install -r requirements.txt
 ```
-4. Run main.py.
-```bash
-python main.py
-```
 ## TEST
 Run main_test.py.
 ```bash
 python main_test.py
+```
+## RUN
+1. Enter your lesson list and credentials into the data.py
+2. Run main.py.
+```bash
+python main.py
 ```
 
