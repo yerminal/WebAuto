@@ -3,6 +3,8 @@ import os
 import sys
 import urllib
 import time
+import random
+
 # recaptcha libraries
 import pydub
 import speech_recognition as sr
@@ -16,15 +18,17 @@ from selenium.webdriver.support import expected_conditions as EC
 
 # custom patch libraries
 from datetime import datetime
+from data import *
 
-desired_time = "09:00:00"
+# Leave None if you do not want time start. (desired_time = None)
+# desired_time = "10:00:00"
 
-# [courseCode, sectionCode, categoryCode]
-lessonList = [
-    ['6510141', '1', 'NONTECHNICAL ELECTIVE'],
-    ['6510242', '1', 'NONTECHNICAL ELECTIVE'],
-    ['6510242', '2', 'NONTECHNICAL ELECTIVE']
-]
+# # [courseCode, sectionCode, categoryCode]
+# lessonList = [
+#     ['6510141', '1', 'NONTECHNICAL ELECTIVE'],
+#     ['6510242', '1', 'NONTECHNICAL ELECTIVE'],
+#     ['6510242', '2', 'NONTECHNICAL ELECTIVE']
+# ]
 
 """
 COURSE CATEGORIES (for selection option):
@@ -46,22 +50,23 @@ NOT INCLUDED = 9
 """
 
 # category_dic = {'1': 'MUST', '4': 'RESTRICTED ELECTIVE', '5': 'FREE ELECTIVE', '7': 'TECHNICAL ELECTIVE', '8': 'NONTECHNICAL ELECTIVE', '9': 'NOT INCLUDED'}
-option_dic = {'MUST': '1', 'RESTRICTED ELECTIVE': '2', 'FREE ELECTIVE': '3', 'TECHNICAL ELECTIVE': '4', 'NONTECHNICAL ELECTIVE': '5', 'NOT INCLUDED': '6'}
+option_dic = {'MUST': '1', 'RESTRICTED ELECTIVE': '2', 'FREE ELECTIVE': '3',
+              'TECHNICAL ELECTIVE': '4', 'NONTECHNICAL ELECTIVE': '5', 'NOT INCLUDED': '6'}
 
 
 def start_process(driver, wait, countdown_control):
     if desired_time:
         time_loop(countdown_control)
     driver.get("https://register.metu.edu.tr")
-    wait.until(EC.presence_of_element_located((By.XPATH, '//input[@id="textUserCode"]')))
-    """
-    If your browser does not autocomplete the login info, run these additionally.
+    wait.until(EC.presence_of_element_located(
+        (By.XPATH, '//input[@id="textUserCode"]')))
+
+    wait.until(EC.presence_of_element_located((By.XPATH, '//input[@id="textUserCode"]'))).send_keys(metu_username)
+    driver.find_element_by_xpath('//input[@id="textPassword"]').send_keys(metu_passw)
     
-    """
-    wait.until(EC.presence_of_element_located((By.XPATH, '//input[@id="textUserCode"]'))).send_keys("\b\b\b\b\b\b\be244416")
-    driver.find_element_by_xpath('//input[@id="textPassword"]').send_keys("\b\b\b\b\b\b\b\b\b\bKom.2240")
     print("Login page found...")
     driver.find_element_by_xpath('//input[@name="submitLogin"]').click()
+
 
 def time_loop(countdown_control):
     print("Entered time loop...")
@@ -78,6 +83,7 @@ def time_loop(countdown_control):
             time.sleep(0.2)
     print("Exiting time loop...")
 
+
 def recaptcha_control(driver):
     element = driver.find_element_by_id("recaptcha-anchor")
     print("Recapctha Checkmark =", element.get_attribute('aria-checked'))
@@ -86,6 +92,7 @@ def recaptcha_control(driver):
     else:
         return False
 
+
 def wait_recaptcha(driver, timeout=5):
     t1 = time.perf_counter()
     element = driver.find_element_by_id("recaptcha-anchor")
@@ -93,6 +100,7 @@ def wait_recaptcha(driver, timeout=5):
         if element.get_attribute('aria-checked') == "true":
             break
         time.sleep(0.1)
+
 
 def recaptcha_solver(driver, control, wait):
     frames = driver.find_elements_by_tag_name("iframe")
@@ -136,8 +144,14 @@ def recaptcha_solver(driver, control, wait):
         src = driver.find_element_by_id("audio-source").get_attribute("src")
         print(f"[INFO] Audio src: {src}")
 
-        path_to_mp3 = os.path.normpath(os.path.join(os.getcwd(), "sample.mp3"))
-        path_to_wav = os.path.normpath(os.path.join(os.getcwd(), "sample.wav"))
+        rand_int = random.randint(0,99999)
+        path_to_mp3 = os.path.normpath(os.path.join(os.getcwd(), f"sample_{rand_int}.mp3"))
+        
+        while os.path.exists(path_to_mp3):
+            rand_int = random.randint(0,99999)
+            path_to_mp3 = os.path.normpath(os.path.join(os.getcwd(), f"sample_{rand_int}.mp3"))
+
+        path_to_wav = os.path.normpath(os.path.join(os.getcwd(), f"sample_{rand_int}.wav"))
 
         # download the mp3 audio file from the source
         urllib.request.urlretrieve(src, path_to_mp3)
@@ -168,17 +182,24 @@ def recaptcha_solver(driver, control, wait):
         frames = driver.find_elements_by_tag_name("iframe")
         driver.switch_to.frame(recaptcha_control_frame)
         wait_recaptcha(driver, 1)
-        
+
         if not recaptcha_control(driver):
             control.refresh = True
         driver.switch_to.default_content()
+
+        try:
+            os.remove(path_to_mp3)
+            os.remove(path_to_wav)
+        except Exception as e:
+            print("ERROR :", "Error occured while removing sound files." , e)
     else:
         driver.switch_to.default_content()
+    
+    
+
 
 def check_lesson(driver, control):
     for i in [x.get_attribute('value').split("|") for x in driver.find_elements_by_name("radio_courseList")]:
-        # try:
-        # print("haha", i[0])
         if i[0] in [x[0] for x in lessonList]:
             lessonNumber = 0
             while lessonNumber < len(lessonList):
@@ -186,16 +207,15 @@ def check_lesson(driver, control):
                     lessonList.pop(lessonNumber)
                     continue
                 lessonNumber += 1
-        #lessonList.remove(i[:2] + [category_dic[i[-1]]]) 
             if control.control_number != 0:
                 control.control_number -= 1
-        # except ValueError:
-        #     pass
+
 
 class ControlTemp:
     def __init__(self) -> None:
         self.refresh = False
         self.control_number = 0
+
 
 def main(countdown_control, restart_process_warning):
     # download latest chromedriver, please ensure that your chrome is up to date
@@ -203,10 +223,10 @@ def main(countdown_control, restart_process_warning):
     path_to_chromedriver = os.path.normpath(
         os.path.join(os.getcwd(), "webdriver", "chromedriver")
     )
-    options = webdriver.ChromeOptions()
-    options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
-    driver = webdriver.Chrome(options=options, executable_path=path_to_chromedriver)
-    # driver = webdriver.Chrome(executable_path=path_to_chromedriver)
+    # options = webdriver.ChromeOptions()
+    # options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
+    # driver = webdriver.Chrome(options=options, executable_path=path_to_chromedriver)
+    driver = webdriver.Chrome(executable_path=path_to_chromedriver)
     wait = WebDriverWait(driver, timeout=3)
 
     # print(driver.title)
@@ -214,9 +234,15 @@ def main(countdown_control, restart_process_warning):
 
     while 1:
         try:
+            if restart_process_warning.value == 0:
+                print("\nadd_course.py KILLED.\n")
+                driver.close()
+                driver.quit()
+                return -1
             start_process(driver, wait, countdown_control)
             try:
-                WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, '//input[@name="submitAddCourse"]')))
+                WebDriverWait(driver, 1).until(EC.presence_of_element_located(
+                    (By.XPATH, '//input[@name="submitAddCourse"]')))
             except Exception as e:
                 if "chrome not reachable" in str(e):
                     restart_process_warning.value = 0
@@ -229,44 +255,56 @@ def main(countdown_control, restart_process_warning):
                 for order in list(range(len(lessonList)))[control.control_number:]:
                     control.control_number = order
                     lesson = lessonList[order]
-                    courseCode, sectionCode, categoryCode = lesson[0], lesson[1], option_dic[lesson[2]] 
+                    courseCode, sectionCode, categoryCode = lesson[0], lesson[1], option_dic[lesson[2]]
                     print(f"\n{order} | {courseCode} - {sectionCode}")
-                    
+
                     try:
-                        WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, '//input[@name="submitAddCourse"]')))
+                        WebDriverWait(driver, 1).until(EC.presence_of_element_located(
+                            (By.XPATH, '//input[@name="submitAddCourse"]')))
                     except Exception as e:
                         print(e)
 
-                    driver.find_element_by_xpath('//*[@id="textAddCourseCode"]').clear()
-                    driver.find_element_by_xpath('//*[@id="textAddCourseCode"]').send_keys(str(courseCode))
+                    driver.find_element_by_xpath(
+                        '//*[@id="textAddCourseCode"]').clear()
+                    driver.find_element_by_xpath(
+                        '//*[@id="textAddCourseCode"]').send_keys(str(courseCode))
 
-                    driver.find_element_by_xpath('//*[@id="textAddCourseSection"]').clear()
-                    driver.find_element_by_xpath('//*[@id="textAddCourseSection"]').send_keys(str(sectionCode))
+                    driver.find_element_by_xpath(
+                        '//*[@id="textAddCourseSection"]').clear()
+                    driver.find_element_by_xpath(
+                        '//*[@id="textAddCourseSection"]').send_keys(str(sectionCode))
 
                     if categoryCode != '1':
-                        driver.find_element_by_xpath(f'//*[@id="selectAddCourseCategory"]/option[{categoryCode}]').click()
+                        driver.find_element_by_xpath(
+                            f'//*[@id="selectAddCourseCategory"]/option[{categoryCode}]').click()
 
                     recaptcha_solver(driver, control, wait)
 
                     if control.refresh:
                         control.refresh = False
                         break
-                    driver.find_element_by_xpath('//input[@name="submitAddCourse"]').click()
+                    driver.find_element_by_xpath(
+                        '//input[@name="submitAddCourse"]').click()
                     countdown_control.value = 1
+
                 control.control_number = 0
-                
+
             if len(lessonList) == 0:
                 break
+
         except Exception as e:
             if len(lessonList) == 0:
                 break
             if "chrome not reachable" in str(e):
                 restart_process_warning.value = 0
-            print("ERROR:", e, "\nRestarting...")
+            print("ERROR:", e)
         if len(lessonList) == 0:
             break
+    driver.close()
+    driver.quit()
     print("\nALL DONE...")
     return 0
 
-# if __name__ == "__main__":
-#     main()
+
+if __name__ == "__main__":
+    main()

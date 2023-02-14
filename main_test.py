@@ -1,6 +1,6 @@
 import multiprocessing as mp
 import countdown
-import add_course
+import test_recaptcha
 import time
 
 if __name__ == "__main__":
@@ -11,7 +11,7 @@ if __name__ == "__main__":
     
     # creating new process
     p1 = mp.Process(target=countdown.countdown, args=(30, countdown_control, restart_process_warning, ))
-    p2 = mp.Process(target=add_course.main, args=(countdown_control, restart_process_warning, ))
+    p2 = mp.Process(target=test_recaptcha.main, args=(countdown_control, restart_process_warning, ))
 
     p1.start()
     p2.start()
@@ -30,7 +30,7 @@ if __name__ == "__main__":
                 p2.terminate()
                 p2.join()
 
-            p2 = mp.Process(target=add_course.main, args=(countdown_control, restart_process_warning, ))
+            p2 = mp.Process(target=test_recaptcha.main, args=(countdown_control, restart_process_warning, ))
             p2.start()
 
             restart_process_warning.value = 1
