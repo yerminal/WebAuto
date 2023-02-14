@@ -15,7 +15,7 @@ python main_test.py
 ```
 2. You can run multiples of main.py. Just open up another terminal and type the same command.
 ```bash
-python main_test.pya
+python main_test.py
 ```
 ## RUN
 1. Enter your lesson list and credentials into the data.py
