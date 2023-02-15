@@ -1,4 +1,4 @@
-desired_time = "10:00:00"
+start_time = "10:00:00"
 
 metu_username = "eXXXXXX"
 metu_passw = "******"

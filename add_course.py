@@ -55,7 +55,7 @@ option_dic = {'MUST': '1', 'RESTRICTED ELECTIVE': '2', 'FREE ELECTIVE': '3',
 
 
 def start_process(driver, wait, countdown_control):
-    if desired_time:
+    if start_time:
         time_loop(countdown_control)
     driver.get("https://register.metu.edu.tr")
     wait.until(EC.presence_of_element_located(
@@ -70,9 +70,9 @@ def start_process(driver, wait, countdown_control):
 
 def time_loop(countdown_control):
     print("Entered time loop...")
-    desired = list(map(int, desired_time.split(":")))
+    desired = list(map(int, start_time.split(":")))
     desired_sec = desired[0]*3600 + desired[1]*60 + desired[2]
-    if desired_time:
+    if start_time:
         while 1:
             current_time = datetime.now().strftime("%H:%M:%S")
             lst = list(map(int, current_time.split(":")))
