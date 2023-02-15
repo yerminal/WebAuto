@@ -1,10 +1,28 @@
 # WebAuto
-## INSTALLATION
-1. [Download](https://chromedriver.chromium.org/downloads) the linux64 version of the chromedriver supporting your current chrome version. Extract the chromedriver.
+## INSTALLATION 
+### WINDOWS
+1. [Download](https://chromedriver.chromium.org/downloads) the windows version of the chromedriver supporting your current chrome version. Extract the chromedriver.exe.
 
-2. Extract the repo zip and paste ```chromedriver``` to the folder named ```webdriver``` in the repo folder.
+2. [Download](https://drive.google.com/drive/folders/1_qwjkghJwksdBrpm7oBnVJ1GarhZBuqx?usp=share_link) all ```ffmpeg.exe``` ```ffplay.exe``` ```ffprobe.exe```.
 
-3. Install the required python packages using pip.
+3. Extract the repo zip.
+
+4. Copy and paste ```ffmpeg.exe``` ```ffplay.exe``` ```ffprobe.exe``` into the repo folder.
+
+5. Paste ```chromedriver.exe``` to the folder named ```webdriver``` in the repo folder.
+
+6. Install the required python packages using pip.
+```bash
+pip install -r requirements.txt
+```
+### LINUX
+1. If you don't have the ffmpeg package (you can check by typing ```ffmpeg -version```), follow the installation directions (Ubuntu) on [this website](https://phoenixnap.com/kb/install-ffmpeg-ubuntu).
+
+2. [Download](https://chromedriver.chromium.org/downloads) the linux64 version of the chromedriver supporting your current chrome version. Extract the chromedriver.
+
+3. Extract the repo zip and paste ```chromedriver``` to the folder named ```webdriver``` in the repo folder.
+
+4. Install the required python packages using pip.
 ```bash
 pip install -r requirements.txt
 ```
