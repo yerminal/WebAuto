@@ -36,6 +36,7 @@ python main_test.py
 python main_test.py
 ```
 ## RUN
+### ADDING COURSE
 1. Enter your lesson list and credentials into the data.py
 2. Run main.py.
 ```bash
@@ -44,4 +45,10 @@ python main.py
 3. You can run multiples of main.py. Just open up another terminal and type:
 ```bash
 python main.py
+```
+### CHANGE SECTION
+1. Enter your lesson list into the change_section.py.
+2. Run change_section.py.
+```bash
+python change_section.py
 ```
