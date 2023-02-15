@@ -2,21 +2,19 @@
 import os
 import sys
 import time
+from datetime import datetime
 
 # selenium libraries
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-
-# custom patch libraries
-from patch import download_latest_chromedriver, webdriver_folder_name
-from datetime import datetime
+from data import *
 
 # Leave None if you do not want time start. (desired_time = None)
-desired_time = "08:00:00"
+desired_time = "10:00:00"
 
-# Usage: [courseCode, categoryCode, sectionList]
+# Usage: [courseCode, categoryName, sectionList]
 lessonList = [
     ['3110210', 'NONTECHNICAL ELECTIVE', ['3']]
 ]
@@ -49,6 +47,8 @@ def start_process():
     driver.get("https://register.metu.edu.tr")
     wait.until(EC.presence_of_element_located((By.XPATH, '//input[@id="textUserCode"]')))
     print("Login page found...")
+    wait.until(EC.presence_of_element_located((By.XPATH, '//input[@id="textUserCode"]'))).send_keys(metu_username)
+    driver.find_element_by_xpath('//input[@id="textPassword"]').send_keys(metu_passw)
     driver.find_element_by_xpath('//input[@name="submitLogin"]').click()
 
 def time_loop():
@@ -97,15 +97,10 @@ def check_lesson():
 if __name__ == "__main__":
     # download latest chromedriver, please ensure that your chrome is up to date
     path_to_chromedriver = os.path.normpath(
-        os.path.join(os.getcwd(), webdriver_folder_name, "chromedriver")
+        os.path.join(os.getcwd(), "webdriver", "chromedriver")
     )
-    options = webdriver.ChromeOptions()
-    options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
-    driver = webdriver.Chrome(options=options, executable_path=path_to_chromedriver)
+    driver = webdriver.Chrome(executable_path=path_to_chromedriver)
     wait = WebDriverWait(driver, timeout=3)
-
-    print(driver.title)
-    input("Type to continue...")
 
     while len(lessonList) != 0:
         try:
@@ -150,5 +145,7 @@ if __name__ == "__main__":
                 break
             print("ERROR:", e, "\nRestarting...")
 
+    driver.close()
+    driver.quit()
     print("\nALL DONE...")
     
