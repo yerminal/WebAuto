@@ -58,8 +58,8 @@ def start_process(driver, wait, countdown_control):
     If your browser does not autocomplete the login info, run these additionally.
     
     """
-    wait.until(EC.presence_of_element_located((By.XPATH, '//input[@id="textUserCode"]'))).send_keys("\b\b\b\b\b\b\be244416")
-    driver.find_element_by_xpath('//input[@id="textPassword"]').send_keys("\b\b\b\b\b\b\b\b\b\bKom.2240")
+    # wait.until(EC.presence_of_element_located((By.XPATH, '//input[@id="textUserCode"]'))).send_keys("\b\b\b\b\b\b\be244416")
+    # driver.find_element_by_xpath('//input[@id="textPassword"]').send_keys("\b\b\b\b\b\b\b\b\b\bKom.2240")
     print("Login page found...")
     driver.find_element_by_xpath('//input[@name="submitLogin"]').click()
 
